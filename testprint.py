@@ -1,7 +1,28 @@
 import win32printing
 
+from descope import (
+    REFRESH_SESSION_TOKEN_NAME,
+    SESSION_TOKEN_NAME,
+    AuthException,
+    DeliveryMethod,
+    DescopeClient,
+    AssociatedTenant,
+    RoleMapping,
+    AttributeMapping
+)
+
+management_key = "xxxx"
+
+try:
+    # You can configure the baseURL by setting the env variable Ex: export DESCOPE_BASE_URI="https://auth.company.com  - this is useful when you utilize CNAME within your Descope project."
+    descope_client = DescopeClient(project_id='<ProjectId>', management_key=management_key)
+except Exception as error:
+    # handle the error
+    print ("failed to initialize. Error:")
+    print (error)
+
 printfont = {"height": 22.5, "weight": 600, "charSet": "ANSI_CHARSET", "faceName": "Consolas"} 
-printfontalt = {"height": 20, "weight": 600, "charSet": "ANSI_CHARSET", "faceName": "Consolas"} 
+printfontalt = {"height": 20, "weight": 610, "charSet": "ANSI_CHARSET", "faceName": "Consolas"} 
 printfont2 = {"height": 20, "weight": 500, "charSet": "ANSI_CHARSET", "faceName": "Consolas"} 
 printfont2alt = {"height": 18.75, "weight": 500, "charSet": "ANSI_CHARSET", "faceName": "Consolas"} 
 printfont3 = {"height": 17.5, "weight": 400, "charSet": "ANSI_CHARSET", "faceName": "Consolas"} 
