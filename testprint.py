@@ -75,6 +75,6 @@ class Person:
                 _printer.end_doc
     
 def main(): 
-    #Some Sort of Input.
+    #Some Sort of Input
     return 0
 main()
