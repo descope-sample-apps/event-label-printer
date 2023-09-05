@@ -11,11 +11,11 @@ from descope import (
     AttributeMapping
 )
 
-management_key = "xxxx"
+management_key = "K2UiaOzJRt8VDlhs1dr8IQW2uT9eCodn3FYblAnCNFvyVZtbx2MAwpzKvjOjFe05o2kEycW"
 
 try:
     # You can configure the baseURL by setting the env variable Ex: export DESCOPE_BASE_URI="https://auth.company.com  - this is useful when you utilize CNAME within your Descope project."
-    descope_client = DescopeClient(project_id='<ProjectId>', management_key=management_key)
+    descope_client = DescopeClient(project_id='C2J150l8sNop1jhp2AdOy9qmPBqZ', management_key=management_key)
 except Exception as error:
     # handle the error
     print ("failed to initialize. Error:")
