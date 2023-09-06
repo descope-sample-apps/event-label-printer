@@ -161,3 +161,6 @@ cython_debug/
 
 #Virtual Environment
 venv
+
+#TestingProgram
+testprint2.py
