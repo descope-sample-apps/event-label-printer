@@ -26,31 +26,6 @@ except Exception as error:
     print("failed to initialize. Error:")
     print(error)
 
-printfont = {
-    "height": 22.5,
-    "weight": 600,
-    "charSet": "ANSI_CHARSET",
-    "faceName": "Consolas",
-}
-printfont2 = {
-    "height": 20,
-    "weight": 500,
-    "charSet": "ANSI_CHARSET",
-    "faceName": "Consolas",
-}
-printfont2alt = {
-    "height": 18.75,
-    "weight": 500,
-    "charSet": "ANSI_CHARSET",
-    "faceName": "Consolas",
-}
-printfont3 = {
-    "height": 17.5,
-    "weight": 400,
-    "charSet": "ANSI_CHARSET",
-    "faceName": "Consolas",
-}
-
 
 def searchUsers():
     custom_attributes = {"print": False, "checkedIn": True}
@@ -69,69 +44,123 @@ def searchUsers():
 
 def printThis(_user):
     with win32printing.Printer(
-        printer_name="iDPRT SP410", margin=(0, 22.5, 0, 0)
+        printer_name="iDPRT SP410", margin=(0, 0, 0, 0)
     ) as _printer:
         try:
             _printer.start_doc
             try:
                 _printer.start_page
-                if len(_user.name) > 16:
-                    if len(_user.name) > 70:
-                        return None
-                    _user.namelist = _user.name.split(" ")
-                    _printer.linegap = 5
-                    match len(_user.namelist):
-                        case 2:
+                _user.namelist = _user.name.split(" ")
+                _maxstringlen = len(max(_user.namelist, key=len))
+                printfontAdjust = {
+                    "height": 25 - (0.4 * _maxstringlen),
+                    "weight": 800,
+                    "charSet": "ANSI_CHARSET",
+                    "faceName": "Consolas",
+                }
+                _printer.linegap = 5
+                _printer.text(" ", align="center", font_config=printfontAdjust)
+                match len(
+                    _user.namelist
+                ):  # This is just in the case of middle names... might not need...
+                    case 2:
+                        if len(_user.name) > 17:
                             _printer.text(
                                 _user.namelist[0],
                                 align="center",
-                                font_config=printfont,
+                                font_config=printfontAdjust,
                             )
                             _printer.text(
                                 _user.namelist[1],
                                 align="center",
-                                font_config=printfont,
+                                font_config=printfontAdjust,
                             )
-                        case 3:
+                        else:
+                            _printer.text(
+                                " ", align="center", font_config=printfontAdjust
+                            )
+                            _printer.text(
+                                _user.namelist[0] + " " + _user.namelist[1],
+                                align="center",
+                                font_config=printfontAdjust,
+                            )
+                    case 3:
+                        if (len(_user.namelist[0]) + len(_user.namelist[1]) > 17) and (
+                            len(_user.namelist[2]) + len(_user.namelist[1])
+                        ) > 17:
                             _printer.text(
                                 _user.namelist[0],
                                 align="center",
-                                font_config=printfont,
+                                font_config=printfontAdjust,
+                            )
+                            _printer.text(
+                                _user.namelist[1],
+                                align="center",
+                                font_config=printfontAdjust,
+                            )
+                            _printer.text(
+                                _user.namelist[2],
+                                align="center",
+                                font_config=printfontAdjust,
+                            )
+                        elif len(_user.namelist[0]) + len(_user.namelist[1]) < 17:
+                            _printer.text(
+                                _user.namelist[0] + " " + _user.namelist[1],
+                                align="center",
+                                font_config=printfontAdjust,
+                            )
+                            _printer.text(
+                                _user.namelist[2],
+                                align="center",
+                                font_config=printfontAdjust,
+                            )
+                        else:
+                            _printer.text(
+                                _user.namelist[0],
+                                align="center",
+                                font_config=printfontAdjust,
                             )
                             _printer.text(
                                 _user.namelist[1] + " " + _user.namelist[2],
                                 align="center",
-                                font_config=printfont,
+                                font_config=printfontAdjust,
                             )
-                        case _:
-                            _printer.end_page
-                            _printer.end_doc
-                            return None
-                    _printer.linegap = 100
-                else:
-                    _printer.linegap = 100
-                    _printer.text(_user.name, align="center", font_config=printfont)
+                    case _:
+                        _printer.end_page
+                        _printer.end_doc
+                        return None
+                _printer.linegap = 150
                 _printer.text("\u2500" * 10, align="center")
-                if len(_user.org) > 20:
-                    _printer.text(_user.org, align="center", font_config=printfont2alt)
-                else:
-                    _printer.text(_user.org, align="center", font_config=printfont2)
-                _printer.text(_user.role, align="center", font_config=printfont3)
+                printfontAdjust = {
+                    "height": 22.5 - (0.25 * len(_user.org)),
+                    "weight": 600,
+                    "charSet": "ANSI_CHARSET",
+                    "faceName": "Consolas",
+                }
+                _printer.text(_user.org, align="center", font_config=printfontAdjust)
+                printfontAdjust = {
+                    "height": 20 - (0.25 * len(_user.role)),
+                    "weight": 550,
+                    "charSet": "ANSI_CHARSET",
+                    "faceName": "Consolas",
+                }
+                _printer.text(_user.role, align="center", font_config=printfontAdjust)
                 _user.print_status = True
             finally:
                 _printer.end_page
         finally:
             _printer.end_doc
 
+
 def printAlgo():
-    userList = searchUsers() #All users checked in but not printed
+    userList = searchUsers()  # All users checked in but not printed
     for user in userList:
         printThis(user)
-    return searchUsers() #Users not printed
+    return searchUsers()  # Users not printed
+
 
 def main():
-    #printAlgo()
-    
+    # printAlgo()
     return 0
 
 
