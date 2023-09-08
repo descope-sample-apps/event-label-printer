@@ -52,6 +52,13 @@ def printThis(user):
                 _printer.start_page
                 _namelist = user.name.split(" ")
                 _maxstringlen = len(max(_namelist, key=len))
+                if _maxstringlen > 40:  # Too long...
+                    _printer.end_page
+                    _printer.end_doc
+                    return None
+                # Find some way to split the string in case it goes on too long...
+                # Split it after character 17? That's a good cutoff.
+                # figure out what to do in case there are multiple strings to be split or the last name has to be split.
                 _printfontAdjust = {
                     "height": 25 - (0.4 * _maxstringlen),
                     "weight": 800,
@@ -60,9 +67,7 @@ def printThis(user):
                 }
                 _printer.linegap = 5
                 _printer.text(" ", align="center", font_config=_printfontAdjust)
-                match len(
-                    _namelist
-                ):  # This is just in the case of middle names... might not need...
+                match len(_namelist):
                     case 2:
                         if len(user.name) > 17:
                             _printer.text(
@@ -121,7 +126,7 @@ def printThis(user):
                                 font_config=_printfontAdjust,
                             )
                             _printer.text(
-                                _namelist[1] + " " + namelist[2],
+                                _namelist[1] + " " + _namelist[2],
                                 align="center",
                                 font_config=_printfontAdjust,
                             )
@@ -162,7 +167,7 @@ def printAlgo():
 
 
 def main():
-    #printAlgo()
+    # printAlgo()
     return 0
 
 
