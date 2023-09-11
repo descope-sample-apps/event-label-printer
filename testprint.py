@@ -17,7 +17,6 @@ management_key = (
 )
 
 try:
-    # You can configure the baseURL by setting the env variable Ex: export DESCOPE_BASE_URI="https://auth.company.com  - this is useful when you utilize CNAME within your Descope project."
     descope_client = DescopeClient(
         project_id="C2J150l8sNop1jhp2AdOy9qmPBqZ", management_key=management_key
     )
@@ -44,32 +43,53 @@ def searchUsers():
 
 def printThis(user):
     with win32printing.Printer(
-        printer_name="iDPRT SP410", margin=(0, 0, 5, 0)
+        printer_name="iDPRT SP410", margin=(0, 0, 5, 0)  # up, right, down, left
     ) as _printer:
         try:
-            _printer.start_doc
+            _printer.start_doc  # start job
             try:
-                _printer.start_page
-                _namelist = user.name.split(" ")
-                _maxstringlen = len(max(_namelist, key=len))
-                if _maxstringlen > 40:  # Too long...
-                    _printer.end_page
-                    _printer.end_doc
-                    return None
+                _printer.start_page  # using one label
+                _namelist = user.name.split(
+                    " "
+                )  # filtering for spaces, splitting name into components
                 # Find some way to split the string in case it goes on too long...
                 # Split it after character 17? That's a good cutoff.
                 # figure out what to do in case there are multiple strings to be split or the last name has to be split.
+                carryStr = None
+                index = 0
+                if len(max(_namelist, key=len)) >= 40:  # Too long...
+                    _printer.end_page
+                    _printer.end_doc
+                    return None
+                for name in _namelist:
+                    if carryStr != None:
+                        name = carryStr + " " + name
+                    if len(name) > 23:
+                        carryStr = name[22:]
+                        _namelist[index] = name[:22] + "-"
+                        index += 1
+                        if index == len(_namelist):
+                            _namelist.append(carryStr)
+                    else:
+                        carryStr = None
                 _printfontAdjust = {
-                    "height": 25 - (0.4 * _maxstringlen),
+                    "height": 25 - (0.4 * len(max(_namelist, key=len))),
                     "weight": 800,
                     "charSet": "ANSI_CHARSET",
                     "faceName": "Consolas",
-                }
-                _printer.linegap = 5
-                _printer.text(" ", align="center", font_config=_printfontAdjust)
+                }  # Adjusting the font so it keeps the name(s) on the page
+                _printer.linegap = 5  # space between lines
+                _printer.text(
+                    " ", align="center", font_config=_printfontAdjust
+                )  # Formatting
                 match len(_namelist):
                     case 2:
-                        if len(user.name) > 17:
+                        _printer.text(
+                            " ", align="center", font_config=_printfontAdjust
+                        )  # Formatting
+                        if (
+                            len(user.name) > 17
+                        ):  # Longest length for which this formatting looks good
                             _printer.text(
                                 _namelist[0],
                                 align="center",
@@ -80,7 +100,7 @@ def printThis(user):
                                 align="center",
                                 font_config=_printfontAdjust,
                             )
-                        else:
+                        else:  # Split across 2 lines
                             _printer.text(
                                 " ", align="center", font_config=_printfontAdjust
                             )
@@ -89,7 +109,10 @@ def printThis(user):
                                 align="center",
                                 font_config=_printfontAdjust,
                             )
-                    case 3:
+                    case 3:  # Same as case 2, but with 3 names instead of 2
+                        _printer.text(
+                            " ", align="center", font_config=_printfontAdjust
+                        )  # Formatting
                         if (len(_namelist[0]) + len(_namelist[1]) > 17) and (
                             len(_namelist[2]) + len(_namelist[1])
                         ) > 17:
@@ -108,7 +131,9 @@ def printThis(user):
                                 align="center",
                                 font_config=_printfontAdjust,
                             )
-                        elif len(_namelist[0]) + len(_namelist[1]) < 17:
+                        elif (
+                            len(_namelist[0]) + len(_namelist[1]) < 17
+                        ):  # First + Middle on one line
                             _printer.text(
                                 _namelist[0] + " " + _namelist[1],
                                 align="center",
@@ -119,7 +144,7 @@ def printThis(user):
                                 align="center",
                                 font_config=_printfontAdjust,
                             )
-                        else:
+                        else:  # Middle + Last on one line
                             _printer.text(
                                 _namelist[0],
                                 align="center",
@@ -130,18 +155,41 @@ def printThis(user):
                                 align="center",
                                 font_config=_printfontAdjust,
                             )
-                    case _:
+                    case 4:
+                        _printer.text(
+                            _namelist[0],
+                            align="center",
+                            font_config=_printfontAdjust,
+                        )
+                        _printer.text(
+                            _namelist[1],
+                            align="center",
+                            font_config=_printfontAdjust,
+                        )
+                        _printer.text(
+                            _namelist[2],
+                            align="center",
+                            font_config=_printfontAdjust,
+                        )
+                        _printer.text(
+                            _namelist[3],
+                            align="center",
+                            font_config=_printfontAdjust,
+                        )
+                    case _:  # Something went wrong
                         _printer.end_page
                         _printer.end_doc
                         return None
-                _printer.linegap = 150
-                _printer.text("\u2500" * 10, align="center")
+                _printer.linegap = (
+                    150  # Bug with win32printing -- need to use large numbers like this
+                )
+                _printer.text("\u2500" * 10, align="center")  # Formatting line
                 _printfontAdjust = {
                     "height": 22.5 - (0.25 * len(user.companyName)),
                     "weight": 600,
                     "charSet": "ANSI_CHARSET",
                     "faceName": "Consolas",
-                }
+                }  # Same thing as before, but now for the company name
                 _printer.text(
                     user.companyName, align="center", font_config=_printfontAdjust
                 )
@@ -150,9 +198,9 @@ def printThis(user):
                     "weight": 550,
                     "charSet": "ANSI_CHARSET",
                     "faceName": "Consolas",
-                }
+                }  # Same thing as before, but now for the title
                 _printer.text(user.title, align="center", font_config=_printfontAdjust)
-                user.print = True
+                user.print = True  # Setting flag to true once done
             finally:
                 _printer.end_page
         finally:
@@ -160,14 +208,15 @@ def printThis(user):
 
 
 def printAlgo():
-    userList = searchUsers()  # All users checked in but not printed
-    for user in userList:
-        printThis(user)
+    userList = searchUsers()  # All users checked in but not printer
+    if(userList != None):
+        for user in userList:
+            printThis(user)
     # Users not printed will be fetched via the next call of searchUsers
 
 
 def main():
-    # printAlgo()
+    printAlgo()
     return 0
 
 
