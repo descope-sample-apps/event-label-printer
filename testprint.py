@@ -55,7 +55,6 @@ def printThis(user):
                 _namelist = user["name"].split(
                     " "
                 )  # filtering for spaces, splitting name into components
-                print(_namelist)
                 carryStr = None
                 index = 0
                 if len(max(_namelist, key=len)) >= 40:  # Too long...
@@ -226,8 +225,6 @@ def printAlgo():
         if(userList != None):
             for user in userList:
                 if(user != None):
-                    print(user)
-                    print("\n\n\n---------------\n\n\n")
                     printThis(user)
         time.sleep(10)
     # Users not printed will be fetched via the next call of searchUsers
