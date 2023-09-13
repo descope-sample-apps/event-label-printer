@@ -61,26 +61,16 @@ def printThis(user):
                     _printer.end_doc
                     return None
                 for name in _namelist:
-                    print(name)
                     if carryStr != None:
                         _namelist[index] = carryStr + " " + name
-                        print("CarryStr Set")
-                        print(_namelist[index])
                     if len(name) > 20:
                         carryStr = name[19:]
                         _namelist[index] = name[:19] + "-"
-                        print("String Split")
-                        print(_namelist[index])
-                        print(carryStr)
-                        print(index)
                         if index == len(_namelist) - 1:
-                            print("Append Set")
                             _namelist.append("")
                     else:
                         carryStr = None
                     index += 1
-                    print("---------------")
-                    print(_namelist)
                 _printfontAdjust = {
                     "height": 25 - (0.4 * len(max(_namelist, key=len))),
                     "weight": 800,
