@@ -1,5 +1,8 @@
 import win32printing
 import json
+from dotenv import load_dotenv
+load_dotenv()
+
 
 from descope import (
     REFRESH_SESSION_TOKEN_NAME,
@@ -13,7 +16,7 @@ from descope import (
 )
 
 management_key = (
-    None
+    managementKey
 )
 
 try:
@@ -36,7 +39,7 @@ def searchUsers():
             print(print(json.dumps(user, indent=2)))
         return users
     except AuthException as error:
-        print("Unable to search users.")
+        print("Unable to searsch users.")
         print("Status Code: " + str(error.status_code))
         print("Error: " + str(error.error_message))
 

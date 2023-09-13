@@ -164,3 +164,6 @@ venv
 
 #TestingProgram
 testprint2.py
+
+#ManagementKey
+management_key.env
