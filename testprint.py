@@ -1,3 +1,4 @@
+import os
 import win32printing
 import json
 from dotenv import load_dotenv
@@ -16,7 +17,7 @@ from descope import (
 )
 
 management_key = (
-    MANAGEMENTKEY
+    os.getenv("MANAGEMENTKEY")
 )
 
 try:
@@ -39,7 +40,7 @@ def searchUsers():
             print(print(json.dumps(user, indent=2)))
         return users
     except AuthException as error:
-        print("Unable to searsch users.")
+        print("Unable to search users.")
         print("Status Code: " + str(error.status_code))
         print("Error: " + str(error.error_message))
 
