@@ -1,4 +1,5 @@
 import os
+import time
 import win32printing
 import json
 from dotenv import load_dotenv
@@ -16,13 +17,11 @@ from descope import (
     AttributeMapping,
 )
 
-management_key = (
-    os.getenv("MANAGEMENTKEY")
-)
+management_key = os.getenv("MANAGEMENT_KEY")
 
 try:
     descope_client = DescopeClient(
-        project_id="C2J150l8sNop1jhp2AdOy9qmPBqZ", management_key=management_key
+        project_id="P2T8BALA2n7gUxdNuvm9AjLEP42B", management_key=management_key
     )
 except Exception as error:
     # handle the error
@@ -31,7 +30,7 @@ except Exception as error:
 
 
 def searchUsers():
-    custom_attributes = {"print": False, "checkedIn": True}
+    custom_attributes = {"print": True}
     try:
         resp = descope_client.mgmt.user.search_all(custom_attributes=custom_attributes)
         print("Successfully searched users.")
@@ -39,6 +38,7 @@ def searchUsers():
         for user in users:
             print(print(json.dumps(user, indent=2)))
         return users
+    
     except AuthException as error:
         print("Unable to search users.")
         print("Status Code: " + str(error.status_code))
@@ -52,9 +52,10 @@ def printThis(user):
             _printer.start_doc  # start job
             try:
                 _printer.start_page  # using one label
-                _namelist = user.name.split(
+                _namelist = user["name"].split(
                     " "
                 )  # filtering for spaces, splitting name into components
+                print(_namelist)
                 carryStr = None
                 index = 0
                 if len(max(_namelist, key=len)) >= 40:  # Too long...
@@ -79,7 +80,7 @@ def printThis(user):
                     "faceName": "Consolas",
                 }
                 _printfontAdjustAlt = {
-                    "height": 25 - 0.9 * len(user.name),
+                    "height": 25 - 0.9 * len(user["name"]),
                     "weight": 800,
                     "charSet": "ANSI_CHARSET",
                     "faceName": "Consolas",
@@ -89,11 +90,19 @@ def printThis(user):
                     " ", align="center", font_config=_printfontAdjust
                 )  # Formatting
                 match len(_namelist):
+                    case 1:
+                        _printer.text(
+                            " ", align="center", font_config=_printfontAdjustAlt)
+                        _printer.text(
+                            user["name"],
+                            align="center",
+                            font_config=_printfontAdjust,
+                        )
                     case 2:
                         _printer.text(
                             " ", align="center", font_config=_printfontAdjustAlt
                         )
-                        if len(user.name) < 20:
+                        if len(user["name"]) < 20:
                             _printer.text(
                                 _namelist[0] + " " + _namelist[1],
                                 align="center",
@@ -189,32 +198,38 @@ def printThis(user):
                 )
                 _printer.text("\u2500" * 10, align="center")  # Formatting line
                 _printfontAdjust = {
-                    "height": 22.5 - (0.25 * len(user.companyName)),
+                    "height": 22.5 - (0.25 * len(user["customAttributes"]["companyName"])),
                     "weight": 600,
                     "charSet": "ANSI_CHARSET",
                     "faceName": "Consolas",
                 }  # Same thing as before, but now for the company name
                 _printer.text(
-                    user.companyName, align="center", font_config=_printfontAdjust
+                    user["customAttributes"]["companyName"], align="center", font_config=_printfontAdjust
                 )
                 _printfontAdjust = {
-                    "height": 20 - (0.25 * len(user.title)),
+                    "height": 20 - (0.25 * len(user["customAttributes"]["title"])),
                     "weight": 550,
                     "charSet": "ANSI_CHARSET",
                     "faceName": "Consolas",
                 }  # Same thing as before, but now for the title
-                _printer.text(user.title, align="center", font_config=_printfontAdjust)
-                user.print = True  # Setting flag to true once done
+                _printer.text(user["customAttributes"]["title"], align="center", font_config=_printfontAdjust)
+                user["customAttributes"]["print"] = False  # Setting flag to false once done
+                #note: this does NOT modify properly -- fix
             finally:
                 _printer.end_page
         finally:
             _printer.end_doc
 
 def printAlgo():
-    userList = searchUsers()  # All users checked in but not printer
-    if(userList != None):
-        for user in userList:
-            printThis(user)
+    while True:
+        userList = searchUsers()  # All users checked in but not printed
+        if(userList != None):
+            for user in userList:
+                if(user != None):
+                    print(user)
+                    print("\n\n\n---------------\n\n\n")
+                    printThis(user)
+        time.sleep(10)
     # Users not printed will be fetched via the next call of searchUsers
 
 
