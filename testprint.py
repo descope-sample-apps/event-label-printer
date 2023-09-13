@@ -40,7 +40,6 @@ def searchUsers():
         print("Status Code: " + str(error.status_code))
         print("Error: " + str(error.error_message))
 
-
 def printThis(user):
     with win32printing.Printer(
         printer_name="iDPRT SP410", margin=(0, 0, 5, 0)  # up, right, down, left
@@ -62,18 +61,34 @@ def printThis(user):
                     _printer.end_doc
                     return None
                 for name in _namelist:
+                    print(name)
                     if carryStr != None:
-                        name = carryStr + " " + name
-                    if len(name) > 23:
-                        carryStr = name[22:]
-                        _namelist[index] = name[:22] + "-"
-                        index += 1
-                        if index == len(_namelist):
-                            _namelist.append(carryStr)
+                        _namelist[index] = carryStr + " " + name
+                        print("CarryStr Set")
+                        print(_namelist[index])
+                    if len(name) > 20:
+                        carryStr = name[19:]
+                        _namelist[index] = name[:19] + "-"
+                        print("String Split")
+                        print(_namelist[index])
+                        print(carryStr)
+                        print(index)
+                        if index == len(_namelist) - 1:
+                            print("Append Set")
+                            _namelist.append("")
                     else:
                         carryStr = None
+                    index += 1
+                    print("---------------")
+                    print(_namelist)
                 _printfontAdjust = {
                     "height": 25 - (0.4 * len(max(_namelist, key=len))),
+                    "weight": 800,
+                    "charSet": "ANSI_CHARSET",
+                    "faceName": "Consolas",
+                }
+                _printfontAdjustAlt = {
+                    "height": 25 - 0.9 * len(user.name),
                     "weight": 800,
                     "charSet": "ANSI_CHARSET",
                     "faceName": "Consolas",
@@ -85,11 +100,15 @@ def printThis(user):
                 match len(_namelist):
                     case 2:
                         _printer.text(
-                            " ", align="center", font_config=_printfontAdjust
-                        )  # Formatting
-                        if (
-                            len(user.name) > 17
-                        ):  # Longest length for which this formatting looks good
+                            " ", align="center", font_config=_printfontAdjustAlt
+                        )
+                        if len(user.name) < 20:
+                            _printer.text(
+                                _namelist[0] + " " + _namelist[1],
+                                align="center",
+                                font_config=_printfontAdjust,
+                            )
+                        else:
                             _printer.text(
                                 _namelist[0],
                                 align="center",
@@ -100,22 +119,10 @@ def printThis(user):
                                 align="center",
                                 font_config=_printfontAdjust,
                             )
-                        else:  # Split across 2 lines
-                            _printer.text(
-                                " ", align="center", font_config=_printfontAdjust
-                            )
-                            _printer.text(
-                                _namelist[0] + " " + _namelist[1],
-                                align="center",
-                                font_config=_printfontAdjust,
-                            )
                     case 3:  # Same as case 2, but with 3 names instead of 2
-                        _printer.text(
-                            " ", align="center", font_config=_printfontAdjust
-                        )  # Formatting
-                        if (len(_namelist[0]) + len(_namelist[1]) > 17) and (
+                        if (len(_namelist[0]) + len(_namelist[1]) > 20) and (
                             len(_namelist[2]) + len(_namelist[1])
-                        ) > 17:
+                        ) > 20:
                             _printer.text(
                                 _namelist[0],
                                 align="center",
@@ -135,6 +142,9 @@ def printThis(user):
                             len(_namelist[0]) + len(_namelist[1]) < 17
                         ):  # First + Middle on one line
                             _printer.text(
+                                " ", align="center", font_config=_printfontAdjustAlt
+                            )
+                            _printer.text(
                                 _namelist[0] + " " + _namelist[1],
                                 align="center",
                                 font_config=_printfontAdjust,
@@ -145,6 +155,9 @@ def printThis(user):
                                 font_config=_printfontAdjust,
                             )
                         else:  # Middle + Last on one line
+                            _printer.text(
+                                " ", align="center", font_config=_printfontAdjustAlt
+                            )
                             _printer.text(
                                 _namelist[0],
                                 align="center",
@@ -205,7 +218,6 @@ def printThis(user):
                 _printer.end_page
         finally:
             _printer.end_doc
-
 
 def printAlgo():
     userList = searchUsers()  # All users checked in but not printer
