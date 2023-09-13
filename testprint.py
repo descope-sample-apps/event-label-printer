@@ -51,9 +51,6 @@ def printThis(user):
                 _namelist = user.name.split(
                     " "
                 )  # filtering for spaces, splitting name into components
-                # Find some way to split the string in case it goes on too long...
-                # Split it after character 17? That's a good cutoff.
-                # figure out what to do in case there are multiple strings to be split or the last name has to be split.
                 carryStr = None
                 index = 0
                 if len(max(_namelist, key=len)) >= 40:  # Too long...
