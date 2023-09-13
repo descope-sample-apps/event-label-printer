@@ -16,7 +16,7 @@ from descope import (
 )
 
 management_key = (
-    managementKey
+    MANAGEMENTKEY
 )
 
 try:
