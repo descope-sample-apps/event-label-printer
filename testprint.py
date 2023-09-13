@@ -3,6 +3,7 @@ import time
 import win32printing
 import json
 from dotenv import load_dotenv
+
 load_dotenv()
 
 
@@ -38,11 +39,31 @@ def searchUsers():
         for user in users:
             print(print(json.dumps(user, indent=2)))
         return users
-    
+
     except AuthException as error:
         print("Unable to search users.")
         print("Status Code: " + str(error.status_code))
         print("Error: " + str(error.error_message))
+
+
+def updateUser(user):
+    # Args:
+    #   login_id (str): The login ID of the user to update.
+    login_id = user["email"]
+    #   attribute_key: The custom attribute that needs to be updated, this attribute needs to exists in Descope console app
+    attribute_key = "print"
+    #	 attribute_val (str): The value to be update
+    attribute_val = False
+
+    try:
+        resp = descope_client.mgmt.user.update_custom_attribute(login_id=login_id, attribute_key=attribute_key, attribute_val=attribute_val)
+        print ("Successfully updated user's custom attribute.")
+        print(json.dumps(resp, indent=2))
+    except AuthException as error:
+        print ("Unable to update user's custom attribute.")
+        print ("Status Code: " + str(error.status_code))
+        print ("Error: " + str(error.error_message))
+
 
 def printThis(user):
     with win32printing.Printer(
@@ -83,6 +104,12 @@ def printThis(user):
                     "weight": 800,
                     "charSet": "ANSI_CHARSET",
                     "faceName": "Consolas",
+                }
+                _printfontAdjustAltAlt = {
+                    "height": 25 - 1.5 * len(user["name"]),
+                    "weight": 800,
+                    "charSet": "ANSI_CHARSET",
+                    "faceName": "Consolas",
                 }  # Adjusting the font so it keeps the name(s) on the page
                 _printer.linegap = 5  # space between lines
                 _printer.text(
@@ -91,7 +118,8 @@ def printThis(user):
                 match len(_namelist):
                     case 1:
                         _printer.text(
-                            " ", align="center", font_config=_printfontAdjustAlt)
+                            " ", align="center", font_config=_printfontAdjustAltAlt
+                        )
                         _printer.text(
                             user["name"],
                             align="center",
@@ -197,13 +225,16 @@ def printThis(user):
                 )
                 _printer.text("\u2500" * 10, align="center")  # Formatting line
                 _printfontAdjust = {
-                    "height": 22.5 - (0.25 * len(user["customAttributes"]["companyName"])),
+                    "height": 22.5
+                    - (0.25 * len(user["customAttributes"]["companyName"])),
                     "weight": 600,
                     "charSet": "ANSI_CHARSET",
                     "faceName": "Consolas",
                 }  # Same thing as before, but now for the company name
                 _printer.text(
-                    user["customAttributes"]["companyName"], align="center", font_config=_printfontAdjust
+                    user["customAttributes"]["companyName"],
+                    align="center",
+                    font_config=_printfontAdjust,
                 )
                 _printfontAdjust = {
                     "height": 20 - (0.25 * len(user["customAttributes"]["title"])),
@@ -211,23 +242,34 @@ def printThis(user):
                     "charSet": "ANSI_CHARSET",
                     "faceName": "Consolas",
                 }  # Same thing as before, but now for the title
-                _printer.text(user["customAttributes"]["title"], align="center", font_config=_printfontAdjust)
-                user["customAttributes"]["print"] = False  # Setting flag to false once done
-                #note: this does NOT modify properly -- fix
+                _printer.text(
+                    user["customAttributes"]["title"],
+                    align="center",
+                    font_config=_printfontAdjust,
+                )
+                user["customAttributes"][
+                    "print"
+                ] = False  # Setting flag to false once done
+                # note: this does NOT modify properly -- fix
             finally:
                 _printer.end_page
         finally:
             _printer.end_doc
+        return user
+
 
 def printAlgo():
     while True:
         userList = searchUsers()  # All users checked in but not printed
-        if(userList != None):
+        if userList != None:
             for user in userList:
-                if(user != None):
+                if user != None:
                     printThis(user)
+                    updateUser(user)
         time.sleep(10)
-    # Users not printed will be fetched via the next call of searchUsers
+
+
+# Users not printed will be fetched via the next call of searchUsers
 
 
 def main():
