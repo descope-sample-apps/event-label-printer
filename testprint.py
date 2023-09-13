@@ -13,7 +13,7 @@ from descope import (
 )
 
 management_key = (
-    "K2UiaOzJRt8VDlhs1dr8IQW2uT9eCodn3FYblAnCNFvyVZtbx2MAwpzKvjOjFe05o2kEycW"
+    None
 )
 
 try:
