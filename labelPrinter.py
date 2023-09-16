@@ -47,7 +47,7 @@ def searchUsers():
     try:
         resp = descope_client.mgmt.user.search_all(custom_attributes=custom_attributes)
         users = resp["users"] 
-        print("Successfully searched users. " + str(len(users)) + "found")
+        print("Successfully searched users. " + str(len(users)) + " found")
         for user in users:
             print(print(json.dumps(user, indent=2)))
         return users
