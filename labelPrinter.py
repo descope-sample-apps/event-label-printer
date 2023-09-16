@@ -19,23 +19,35 @@ from descope import (
 )
 
 management_key = os.getenv("MANAGEMENT_KEY")
+project_id = os.getenv("PROJECT_ID")
 
 try:
     descope_client = DescopeClient(
-        project_id="P2T8BALA2n7gUxdNuvm9AjLEP42B", management_key=management_key
+        project_id=project_id, management_key=management_key
     )
 except Exception as error:
     # handle the error
     print("failed to initialize. Error:")
     print(error)
 
+def get_name_array(name):
+    if (len(name) < 20):
+        return [name]
+    
+    nameArr = name.split(" ")
+
+    if (len(nameArr) == 1):
+        return nameArr
+    
+    # if (len(nameArr) > 3):
+    return nameArr[:3] 
 
 def searchUsers():
-    custom_attributes = {"print": True}
+    custom_attributes = {"checkedIn": True, "approved": True, "printed": False}
     try:
         resp = descope_client.mgmt.user.search_all(custom_attributes=custom_attributes)
-        print("Successfully searched users.")
         users = resp["users"] 
+        print("Successfully searched users. " + str(len(users)) + "found")
         for user in users:
             print(print(json.dumps(user, indent=2)))
         return users
@@ -51,9 +63,9 @@ def updateUser(user):
     #   login_id (str): The login ID of the user to update.
     login_id = user["email"]
     #   attribute_key: The custom attribute that needs to be updated, this attribute needs to exists in Descope console app
-    attribute_key = "print"
+    attribute_key = "printed"
     #	 attribute_val (str): The value to be update
-    attribute_val = False
+    attribute_val = True
 
     try:
         resp = descope_client.mgmt.user.update_custom_attribute(login_id=login_id, attribute_key=attribute_key, attribute_val=attribute_val)
@@ -73,9 +85,7 @@ def printThis(user):
             _printer.start_doc  # start job
             try:
                 _printer.start_page  # using one label
-                _namelist = user["name"].split(
-                    " "
-                )  # filtering for spaces, splitting name into components
+                _namelist = user["name"].split(" ") 
                 carryStr = None
                 index = 0
                 if len(max(_namelist, key=len)) >= 40:  # Too long...
