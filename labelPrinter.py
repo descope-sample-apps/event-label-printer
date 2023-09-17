@@ -273,7 +273,7 @@ def printThis(user):
                 )
                 _printer.text("\u2500" * 10, align="center")  # Formatting line
 
-                companyName = get_print_string(user["customAttributes"]["companyName"]),MAX_COMPANY_LINE
+                companyName = get_print_string(user["customAttributes"]["companyName"],MAX_COMPANY_LINE)
                 _printfontAdjust = {
                     "height": 22.5 - (0.25 * len(companyName)),
                     "weight": 600,
@@ -286,7 +286,7 @@ def printThis(user):
                     font_config=_printfontAdjust,
                 )
                 
-                title = get_print_string(user["customAttributes"]["title"]),MAX_TITLE_LINE
+                title = get_print_string(user["customAttributes"]["title"],MAX_TITLE_LINE)
                 _printfontAdjust = {
                     "height": 20 - (0.25 * len(title)),
                     "weight": 550,
