@@ -33,7 +33,6 @@ try:
         project_id=project_id, management_key=management_key
     )
 except Exception as error:
-    # handle the error
     print("failed to initialize. Error:")
     print(error)
 
