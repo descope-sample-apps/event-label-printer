@@ -321,11 +321,4 @@ def main():
     printAlgo()
     return 0
 
-print(get_name_array("Gilad"))
-print(get_name_array("Gilad "))
-print(get_name_array("Gilad Shriki"))
-print(get_name_array("Gilad Shriki The"))
-print(get_name_array("Gilad Shriki The Third"))
-print(get_name_array("Gilad12345123451234512345 Shriki The Third and Fifth 12345678901234567890123456 very long"))
-print(get_name_array("Gilad12345123451234512345 Shriki The Third and the Fifth 12345678901234567890123456 very long"))
-# main()
+main()
