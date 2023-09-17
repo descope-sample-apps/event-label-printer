@@ -16,7 +16,7 @@ from descope import (
     DescopeClient,
 )
 
-LINE_CLEAR = '\x1b[2K' # <-- ANSI sequence
+LINE_CLEAR = '\x1b[2K' 
 
 print("Setting up...")
 load_dotenv()
