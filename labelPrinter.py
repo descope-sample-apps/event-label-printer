@@ -1,11 +1,15 @@
 import os
 import time
-import win32printing
 import json
 from dotenv import load_dotenv
+from datetime import datetime
 
-load_dotenv()
-
+try:
+    import win32printing
+    PRINTING_ENV = True
+except: 
+    print("No win32printing. Running test")
+    PRINTING_ENV = False    
 
 from descope import (
     REFRESH_SESSION_TOKEN_NAME,
@@ -18,8 +22,14 @@ from descope import (
     AttributeMapping,
 )
 
+LINE_CLEAR = '\x1b[2K' # <-- ANSI sequence
+
+print("Setting up...")
+load_dotenv()
 management_key = os.getenv("MANAGEMENT_KEY")
 project_id = os.getenv("PROJECT_ID")
+
+print("Project ID: " + project_id + ". Management Key: " + management_key[:5] + "********" + management_key[-5:])
 
 try:
     descope_client = DescopeClient(
@@ -47,9 +57,18 @@ def searchUsers():
     try:
         resp = descope_client.mgmt.user.search_all(custom_attributes=custom_attributes)
         users = resp["users"] 
-        print("Successfully searched users. " + str(len(users)) + " found")
-        for user in users:
-            print(print(json.dumps(user, indent=2)))
+        print(end=LINE_CLEAR) # <-- clear the line where cursor is located
+        
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+
+        print("   " + current_time + " Running... ", end='\r')
+
+        if (len(users) > 0):
+            print()
+            print()
+            print("   Found " + str(len(users)) + " users to print.")
+        
         return users
 
     except AuthException as error:
@@ -69,8 +88,8 @@ def updateUser(user):
 
     try:
         resp = descope_client.mgmt.user.update_custom_attribute(login_id=login_id, attribute_key=attribute_key, attribute_val=attribute_val)
-        print ("Successfully updated user's custom attribute.")
-        print(json.dumps(resp, indent=2))
+        print ("   Successfully updated user. Email: " + user["email"])
+        print()
     except AuthException as error:
         print ("Unable to update user's custom attribute.")
         print ("Status Code: " + str(error.status_code))
@@ -78,6 +97,10 @@ def updateUser(user):
 
 
 def printThis(user):
+    print("   Printing " + user["email"])
+    if (not PRINTING_ENV):
+        return user
+
     with win32printing.Printer(
         printer_name="iDPRT SP410", margin=(0, 0, 5, 0)  # up, right, down, left
     ) as _printer:
