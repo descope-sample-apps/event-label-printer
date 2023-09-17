@@ -313,10 +313,6 @@ def printAlgo():
                     updateUser(user)
         time.sleep(5)
 
-
-# Users not printed will be fetched via the next call of searchUsers
-
-
 def main():
     printAlgo()
     return 0
