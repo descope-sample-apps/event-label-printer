@@ -17,6 +17,9 @@ from descope import (
 )
 
 LINE_CLEAR = '\x1b[2K' 
+MAX_NAME_LINE = 20
+MAX_COMPANY_LINE = 40
+MAX_TITLE_LINE = 40
 
 print("Setting up...")
 load_dotenv()
@@ -34,9 +37,9 @@ except Exception as error:
     print("failed to initialize. Error:")
     print(error)
 
-def get_print_string(str):
-    if (len(str) > 20):
-        return str[:20]
+def get_print_string(str, max):
+    if (len(str) > max):
+        return str[:max]
     else:
         return str
     
@@ -48,12 +51,12 @@ def get_name_array(full_name):
     nameArr = name.split(" ")
     
     lines = []
-    currentLine = get_print_string(nameArr[0])
+    currentLine = get_print_string(nameArr[0],MAX_NAME_LINE)
 
     for idx in range (1,len(nameArr)):
         namePart = get_print_string(nameArr[idx])
 
-        if len(currentLine + " " + namePart) > 20:
+        if len(currentLine + " " + namePart) > MAX_NAME_LINE:
             lines.append(currentLine)
             currentLine = namePart
         else:
@@ -269,26 +272,29 @@ def printThis(user):
                     150  # Bug with win32printing -- need to use large numbers like this
                 )
                 _printer.text("\u2500" * 10, align="center")  # Formatting line
+
+                companyName = get_print_string(user["customAttributes"]["companyName"]),MAX_COMPANY_LINE
                 _printfontAdjust = {
-                    "height": 22.5
-                    - (0.25 * len(user["customAttributes"]["companyName"])),
+                    "height": 22.5 - (0.25 * len(companyName)),
                     "weight": 600,
                     "charSet": "ANSI_CHARSET",
                     "faceName": "Consolas",
                 }  # Same thing as before, but now for the company name
                 _printer.text(
-                    user["customAttributes"]["companyName"],
+                    companyName,
                     align="center",
                     font_config=_printfontAdjust,
                 )
+                
+                title = get_print_string(user["customAttributes"]["title"]),MAX_TITLE_LINE
                 _printfontAdjust = {
-                    "height": 20 - (0.25 * len(user["customAttributes"]["title"])),
+                    "height": 20 - (0.25 * len(title)),
                     "weight": 550,
                     "charSet": "ANSI_CHARSET",
                     "faceName": "Consolas",
                 }  # Same thing as before, but now for the title
                 _printer.text(
-                    user["customAttributes"]["title"],
+                    title,
                     align="center",
                     font_config=_printfontAdjust,
                 )
