@@ -12,14 +12,8 @@ except:
     PRINTING_ENV = False    
 
 from descope import (
-    REFRESH_SESSION_TOKEN_NAME,
-    SESSION_TOKEN_NAME,
     AuthException,
-    DeliveryMethod,
     DescopeClient,
-    AssociatedTenant,
-    RoleMapping,
-    AttributeMapping,
 )
 
 LINE_CLEAR = '\x1b[2K' # <-- ANSI sequence
@@ -40,17 +34,34 @@ except Exception as error:
     print("failed to initialize. Error:")
     print(error)
 
-def get_name_array(name):
+def get_print_string(str):
+    if (len(str) > 20):
+        return str[:20]
+    else:
+        return str
+    
+def get_name_array(full_name):
+    name = full_name.strip()
     if (len(name) < 20):
         return [name]
     
     nameArr = name.split(" ")
-
-    if (len(nameArr) == 1):
-        return nameArr
     
-    # if (len(nameArr) > 3):
-    return nameArr[:3] 
+    lines = []
+    currentLine = get_print_string(nameArr[0])
+
+    for idx in range (1,len(nameArr)):
+        namePart = get_print_string(nameArr[idx])
+
+        if len(currentLine + " " + namePart) > 20:
+            lines.append(currentLine)
+            currentLine = namePart
+        else:
+            currentLine = currentLine + " " + namePart
+
+    lines.append(currentLine)
+
+    return lines[:3] 
 
 def searchUsers():
     custom_attributes = {"checkedIn": True, "approved": True, "printed": False}
@@ -108,7 +119,8 @@ def printThis(user):
             _printer.start_doc  # start job
             try:
                 _printer.start_page  # using one label
-                _namelist = user["name"].split(" ") 
+                # _namelist = user["name"].split(" ") 
+                _namelist = get_name_array(user["name"])
                 carryStr = None
                 index = 0
                 if len(max(_namelist, key=len)) >= 40:  # Too long...
@@ -309,5 +321,11 @@ def main():
     printAlgo()
     return 0
 
-
-main()
+print(get_name_array("Gilad"))
+print(get_name_array("Gilad "))
+print(get_name_array("Gilad Shriki"))
+print(get_name_array("Gilad Shriki The"))
+print(get_name_array("Gilad Shriki The Third"))
+print(get_name_array("Gilad12345123451234512345 Shriki The Third and Fifth 12345678901234567890123456 very long"))
+print(get_name_array("Gilad12345123451234512345 Shriki The Third and the Fifth 12345678901234567890123456 very long"))
+# main()
