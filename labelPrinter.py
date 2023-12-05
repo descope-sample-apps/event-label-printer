@@ -1,6 +1,5 @@
 import os
 import time
-import json
 from dotenv import load_dotenv
 from datetime import datetime
 
@@ -53,7 +52,7 @@ def get_name_array(full_name):
     currentLine = get_print_string(nameArr[0],MAX_NAME_LINE)
 
     for idx in range (1,len(nameArr)):
-        namePart = get_print_string(nameArr[idx])
+        namePart = get_print_string(nameArr[idx],MAX_NAME_LINE)
 
         if len(currentLine + " " + namePart) > MAX_NAME_LINE:
             lines.append(currentLine)
@@ -89,19 +88,14 @@ def searchUsers():
         print("Status Code: " + str(error.status_code))
         print("Error: " + str(error.error_message))
 
-
 def updateUser(user):
-    # Args:
-    #   login_id (str): The login ID of the user to update.
-    login_id = user["email"]
-    #   attribute_key: The custom attribute that needs to be updated, this attribute needs to exists in Descope console app
+    login_id = user["loginIds"][0]
     attribute_key = "printed"
-    #	 attribute_val (str): The value to be update
     attribute_val = True
 
     try:
         resp = descope_client.mgmt.user.update_custom_attribute(login_id=login_id, attribute_key=attribute_key, attribute_val=attribute_val)
-        print ("   Successfully updated user. Email: " + user["email"])
+        print ("   Successfully updated user. LoginID: " + login_id + ". userEmail: " + user["email"] + ".")
         print()
     except AuthException as error:
         print ("Unable to update user's custom attribute.")
@@ -310,12 +304,23 @@ def printThis(user):
 
 def printAlgo():
     while True:
-        userList = searchUsers()  # All users checked in but not printed
-        if userList != None:
-            for user in userList:
-                if user != None:
-                    printThis(user)
-                    updateUser(user)
+        try:
+            userList = searchUsers()  # All users checked in but not printed
+            if userList != None:
+                for user in userList:
+                    if user != None:
+                        try:
+                            printThis(user)
+                            updateUser(user)
+                        except :
+                            print()
+                            print("Error")
+                            print()
+        except:
+            print()
+            print("Error")
+            print()
+
         time.sleep(5)
 
 def main():
