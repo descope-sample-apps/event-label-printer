@@ -35,11 +35,13 @@ except Exception as error:
     print("failed to initialize. Error:")
     print(error)
 
-def get_print_string(str, max):
-    if (len(str) > max):
-        return str[:max]
+def get_print_string(arr, key, max):
+    if not key in arr:
+        return ""
+    if (len(arr[key]) > max):
+        return arr[key][:max]
     else:
-        return str
+        return arr[key]
     
 def get_name_array(full_name):
     name = full_name.strip()
@@ -90,11 +92,13 @@ def searchUsers():
 
 def updateUser(user):
     login_id = user["loginIds"][0]
+    print(login_id)
     attribute_key = "printed"
     attribute_val = True
 
     try:
         resp = descope_client.mgmt.user.update_custom_attribute(login_id=login_id, attribute_key=attribute_key, attribute_val=attribute_val)
+        print(resp)
         print ("   Successfully updated user. LoginID: " + login_id + ". userEmail: " + user["email"] + ".")
         print()
     except AuthException as error:
@@ -265,8 +269,7 @@ def printThis(user):
                     150  # Bug with win32printing -- need to use large numbers like this
                 )
                 _printer.text("\u2500" * 10, align="center")  # Formatting line
-
-                companyName = get_print_string(user["customAttributes"]["companyName"],MAX_COMPANY_LINE)
+                companyName = get_print_string(user["customAttributes"],"companyName",MAX_COMPANY_LINE)
                 _printfontAdjust = {
                     "height": 22.5 - (0.25 * len(companyName)),
                     "weight": 600,
@@ -279,7 +282,7 @@ def printThis(user):
                     font_config=_printfontAdjust,
                 )
                 
-                title = get_print_string(user["customAttributes"]["title"],MAX_TITLE_LINE)
+                title = get_print_string(user["customAttributes"],"title",MAX_TITLE_LINE)
                 _printfontAdjust = {
                     "height": 20 - (0.25 * len(title)),
                     "weight": 550,
@@ -314,11 +317,11 @@ def printAlgo():
                             updateUser(user)
                         except :
                             print()
-                            print("Error")
+                            print("Error 1")
                             print()
         except:
             print()
-            print("Error")
+            print(" Error 2")
             print()
 
         time.sleep(5)
