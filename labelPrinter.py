@@ -38,10 +38,18 @@ except Exception as error:
 def get_print_string(arr, key, max):
     if not key in arr:
         return ""
+    print(arr[key])
     if (len(arr[key]) > max):
         return arr[key][:max]
     else:
         return arr[key]
+    
+def get_print_name_string(name, max):
+    print(name)
+    if (len(name) > max):
+        return name[:max]
+    else:
+        return name
     
 def get_name_array(full_name):
     name = full_name.strip()
@@ -51,10 +59,10 @@ def get_name_array(full_name):
     nameArr = name.split(" ")
     
     lines = []
-    currentLine = get_print_string(nameArr[0],MAX_NAME_LINE)
+    currentLine = get_print_name_string(nameArr[0], MAX_NAME_LINE)
 
     for idx in range (1,len(nameArr)):
-        namePart = get_print_string(nameArr[idx],MAX_NAME_LINE)
+        namePart =get_print_name_string(nameArr[idx],MAX_NAME_LINE)
 
         if len(currentLine + " " + namePart) > MAX_NAME_LINE:
             lines.append(currentLine)
@@ -119,7 +127,6 @@ def printThis(user):
             _printer.start_doc  # start job
             try:
                 _printer.start_page  # using one label
-                # _namelist = user["name"].split(" ") 
                 _namelist = get_name_array(user["name"])
                 carryStr = None
                 index = 0
@@ -307,22 +314,12 @@ def printThis(user):
 
 def printAlgo():
     while True:
-        try:
-            userList = searchUsers()  # All users checked in but not printed
-            if userList != None:
-                for user in userList:
-                    if user != None:
-                        try:
-                            printThis(user)
-                            updateUser(user)
-                        except :
-                            print()
-                            print("Error 1")
-                            print()
-        except:
-            print()
-            print(" Error 2")
-            print()
+        userList = searchUsers()  # All users checked in but not printed
+        if userList != None:
+            for user in userList:
+                if user != None:
+                    printThis(user)
+                    updateUser(user)
 
         time.sleep(5)
 
