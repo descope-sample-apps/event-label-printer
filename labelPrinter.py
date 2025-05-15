@@ -127,7 +127,6 @@ def printThis(user):
             _printer.start_doc  # start job
             try:
                 _printer.start_page  # using one label
-                # _namelist = user["name"].split(" ") 
                 _namelist = get_name_array(user["name"])
                 carryStr = None
                 index = 0
@@ -315,22 +314,12 @@ def printThis(user):
 
 def printAlgo():
     while True:
-        # try:
         userList = searchUsers()  # All users checked in but not printed
         if userList != None:
             for user in userList:
                 if user != None:
-                    # try:
                     printThis(user)
                     updateUser(user)
-                        # except :
-                            # print()
-                            # print("Error 1")
-                            # print()
-        # except:
-        #     print()
-        #     print(" Error 2")
-        #     print()
 
         time.sleep(5)
 
