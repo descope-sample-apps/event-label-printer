@@ -19,6 +19,7 @@ LINE_CLEAR = '\x1b[2K'
 MAX_NAME_LINE = 20
 MAX_COMPANY_LINE = 39
 MAX_TITLE_LINE = 40
+MAX_BALE_HEADER_LINE = 100
 
 print("Setting up...")
 load_dotenv()
@@ -118,7 +119,10 @@ def printThis(user):
             _printer.start_page  # using one label
             
             _printer.text(" ", align="center", font_config=fontGap)  
-            _printer.text("< Descope MCP Hackathon />", align="center", font_config=fontHeader) 
+            
+            labelHeader = get_print_string(user["customAttributes"],"labelHeader",MAX_BALE_HEADER_LINE)
+
+            _printer.text(labelHeader, align="center", font_config=fontHeader) 
             _printer.text(" ", align="center", font_config=fontGap)  
 
             name_lines = get_name_lines(user["name"])                
