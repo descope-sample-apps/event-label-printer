@@ -43,7 +43,7 @@ def get_print_string(arr, key, max):
         return arr[key][:max]
     else:
         return arr[key]
-    
+
 def get_print_name_string(name, max):
     print(name)
     if (len(name) > max):
@@ -73,6 +73,29 @@ def get_name_array(full_name):
     lines.append(currentLine)
 
     return lines[:3] 
+
+# split the name to 2 lines, each no longer than MAX_NAME_LINE
+# if words too long, cut and add ...
+# if name is one word, have 2nd line empty
+def get_name_lines(name):
+    name_lines = []
+    words = name.split(" ")
+    current_line = ""
+
+    for word in words:
+        if len(current_line) + len(word) + 1 > MAX_NAME_LINE:
+            name_lines.append(current_line)
+            current_line = word
+        else:
+            current_line += " " + word if current_line else word
+
+    name_lines.append(current_line)
+    # Ensure we have 2 lines
+    while len(name_lines) < 2:
+        name_lines.append("")
+
+    return name_lines[:2]   
+
 
 def searchUsers():
     custom_attributes = {"checkedIn": True, "approved": True, "printed": False}
@@ -120,12 +143,12 @@ def printThis(user):
     if (not PRINTING_ENV):
         return user
 
-    fontHeader = {
-        "height": 12,
-        "weight": 600,
-        "charSet": "ANSI_CHARSET",
-        "faceName": "Consolas",
-    }
+    fontCharSet = "ANSI_CHARSET"
+    fontFaceName = "Consolas"
+    fontHeader = { "height": 12, "weight": 400, "charSet": fontCharSet, "faceName": fontFaceName }
+    fontName = { "height": 25, "weight": 600, "charSet": fontCharSet, "faceName": fontFaceName }
+    fontCompany = { "height": 20, "weight": 600, "charSet": fontCharSet, "faceName": fontFaceName }
+    fontTitle = { "height": 16, "weight": 600, "charSet": fontCharSet, "faceName": fontFaceName }
 
 
     with win32printing.Printer(
@@ -135,187 +158,26 @@ def printThis(user):
             _printer.start_doc  # start job
             try:
                 _printer.start_page  # using one label
-                _namelist = get_name_array(user["name"])
-                carryStr = None
-                index = 0
-                if len(max(_namelist, key=len)) >= 40:  # Too long...
-                    _printer.end_page
-                    _printer.end_doc
-                    return None
-                for name in _namelist:
-                    if carryStr != None:
-                        _namelist[index] = carryStr + " " + name
-                    if len(name) > 20:
-                        carryStr = name[19:]
-                        _namelist[index] = name[:19] + "-"
-                        if index == len(_namelist) - 1:
-                            _namelist.append("")
-                    else:
-                        carryStr = None
-                    index += 1
-                _printfontAdjust = {
-                    "height": 35 - (0.4 * len(max(_namelist, key=len))),
-                    "weight": 800,
-                    "charSet": "ANSI_CHARSET",
-                    "faceName": "Consolas",
-                }
-                _printfontAdjustAlt = {
-                    "height": 30 - 0.9 * len(user["name"]),
-                    "weight": 800,
-                    "charSet": "ANSI_CHARSET",
-                    "faceName": "Consolas",
-                }
-                _printfontAdjustAltAlt = {
-                    "height": 30 - 1.5 * len(user["name"]),
-                    "weight": 800,
-                    "charSet": "ANSI_CHARSET",
-                    "faceName": "Consolas",
-                }  # Adjusting the font so it keeps the name(s) on the page
-                _printer.linegap = 5  # space between lines
                 
                 _printer.text(" ", align="center", font_config=fontHeader)  
                 _printer.text("< Descope MCP Hackathon />", align="center", font_config=fontHeader) 
                 _printer.text(" ", align="center", font_config=fontHeader)  
 
-                match len(_namelist):
-                    case 1:
-                        _printer.text(
-                            " ", align="center", font_config=_printfontAdjustAltAlt
-                        )
-                        _printer.text(
-                            user["name"],
-                            align="center",
-                            font_config=_printfontAdjust,
-                        )
-                    case 2:
-                        _printer.text(
-                            " ", align="center", font_config=_printfontAdjustAlt
-                        )
-                        if len(user["name"]) < 20:
-                            _printer.text(
-                                _namelist[0] + " " + _namelist[1],
-                                align="center",
-                                font_config=_printfontAdjust,
-                            )
-                        else:
-                            _printer.text(
-                                _namelist[0],
-                                align="center",
-                                font_config=_printfontAdjust,
-                            )
-                            _printer.text(
-                                _namelist[1],
-                                align="center",
-                                font_config=_printfontAdjust,
-                            )
-                    case 3:  # Same as case 2, but with 3 names instead of 2
-                        if (len(_namelist[0]) + len(_namelist[1]) > 20) and (
-                            len(_namelist[2]) + len(_namelist[1])
-                        ) > 20:
-                            _printer.text(
-                                _namelist[0],
-                                align="center",
-                                font_config=_printfontAdjust,
-                            )
-                            _printer.text(
-                                _namelist[1],
-                                align="center",
-                                font_config=_printfontAdjust,
-                            )
-                            _printer.text(
-                                _namelist[2],
-                                align="center",
-                                font_config=_printfontAdjust,
-                            )
-                        elif (
-                            len(_namelist[0]) + len(_namelist[1]) < 17
-                        ):  # First + Middle on one line
-                            _printer.text(
-                                " ", align="center", font_config=_printfontAdjustAlt
-                            )
-                            _printer.text(
-                                _namelist[0] + " " + _namelist[1],
-                                align="center",
-                                font_config=_printfontAdjust,
-                            )
-                            _printer.text(
-                                _namelist[2],
-                                align="center",
-                                font_config=_printfontAdjust,
-                            )
-                        else:  # Middle + Last on one line
-                            _printer.text(
-                                " ", align="center", font_config=_printfontAdjustAlt
-                            )
-                            _printer.text(
-                                _namelist[0],
-                                align="center",
-                                font_config=_printfontAdjust,
-                            )
-                            _printer.text(
-                                _namelist[1] + " " + _namelist[2],
-                                align="center",
-                                font_config=_printfontAdjust,
-                            )
-                    case 4:
-                        _printer.text(
-                            _namelist[0],
-                            align="center",
-                            font_config=_printfontAdjust,
-                        )
-                        _printer.text(
-                            _namelist[1],
-                            align="center",
-                            font_config=_printfontAdjust,
-                        )
-                        _printer.text(
-                            _namelist[2],
-                            align="center",
-                            font_config=_printfontAdjust,
-                        )
-                        _printer.text(
-                            _namelist[3],
-                            align="center",
-                            font_config=_printfontAdjust,
-                        )
-                    case _:  # Something went wrong
-                        _printer.end_page
-                        _printer.end_doc
-                        return None
-                _printer.linegap = (
-                    150  # Bug with win32printing -- need to use large numbers like this
-                )
-                _printer.text("\u2500" * 30, align="center")  # Formatting line
+                name_lines = get_name_lines(user["name"])                
+                _printer.text(name_lines[0], align="center", font_config=fontName)  
+                _printer.text(name_lines[1], align="center", font_config=fontName)  
+
+
+                _printer.linegap = (150)
+                _printer.text("\u2500" * 30, align="center")
 
                 companyName = get_print_string(user["customAttributes"],"companyName",MAX_COMPANY_LINE)
-                _printfontAdjust = {
-                    "height": 22.5 - (0.25 * len(companyName)),
-                    "weight": 600,
-                    "charSet": "ANSI_CHARSET",
-                    "faceName": "Consolas",
-                }  # Same thing as before, but now for the company name
-                _printer.text(
-                    companyName,
-                    align="center",
-                    font_config=_printfontAdjust,
-                )
+                _printer.text(companyName,align="center",font_config=fontCompany)
                 
                 title = get_print_string(user["customAttributes"],"title",MAX_TITLE_LINE)
-                _printfontAdjust = {
-                    "height": 20 - (0.25 * len(title)),
-                    "weight": 550,
-                    "charSet": "ANSI_CHARSET",
-                    "faceName": "Consolas",
-                }  # Same thing as before, but now for the title
-                _printer.text(
-                    title,
-                    align="center",
-                    font_config=_printfontAdjust,
-                )
-                user["customAttributes"][
-                    "print"
-                ] = False  # Setting flag to false once done
-                # note: this does NOT modify properly -- fix
+                _printer.text(title,align="center",font_config=fontTitle)
+                user["customAttributes"]["print"] = False
+
             finally:
                 _printer.end_page
         finally:
