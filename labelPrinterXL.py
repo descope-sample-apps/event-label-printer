@@ -158,7 +158,7 @@ def printAlgo():
                     printThis(user)
                     updateUser(user)
 
-        time.sleep(2)
+        time.sleep(1)
 
 def main():
     printAlgo()
