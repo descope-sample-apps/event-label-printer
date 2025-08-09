@@ -89,7 +89,7 @@ def updateUser(user):
 
     try:
         resp = descope_client.mgmt.user.update_custom_attribute(login_id=login_id, attribute_key=attribute_key, attribute_val=attribute_val)
-        print ("   Successfully updated user. LoginID: " + login_id + ". userEmail: " + user["email"] + ".")
+        print ("   Successfully updated user. Email: " + login_id)
         print()
     except AuthException as error:
         print ("Unable to update user's custom attribute.")
@@ -98,7 +98,7 @@ def updateUser(user):
 
 
 def printThis(user):
-    print("   Printing " + user["email"])
+    print("   Printing " + user["name"])
     if (not PRINTING_ENV):
         return user
 
