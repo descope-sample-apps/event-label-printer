@@ -169,12 +169,14 @@ def printThis(user):
             _printer.text(name_lines[1], align="center", font_config=fontName)  
             _printer.text(" ", align="center", font_config=fontGap)  
 
-            _printer.linegap = (200)
             _printer.text("\u2500" * 30, align="center")
+            _printer.text(" ", align="center", font_config=fontGap)  
 
             companyName = get_print_string(user["customAttributes"],"companyName",MAX_COMPANY_LINE)
             _printer.text(companyName,align="center",font_config=fontCompany)
-            
+
+            _printer.text(" ", align="center", font_config=fontGap)  
+
             title = get_print_string(user["customAttributes"],"title",MAX_TITLE_LINE)
             _printer.text(title,align="center",font_config=fontTitle)
             user["customAttributes"]["print"] = False
