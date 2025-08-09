@@ -74,27 +74,19 @@ def get_name_array(full_name):
 
     return lines[:3] 
 
-# split the name to 2 lines, each no longer than MAX_NAME_LINE
-# if words too long, cut and add ...
-# if name is one word, have 2nd line empty
-def get_name_lines(name):
-    name_lines = []
-    words = name.split(" ")
-    current_line = ""
+# get the first word in the first line
+# and the rest of the words in second line capped at MAX_NAME_LENGTH
+def get_name_lines(full_name):
+    name_lines = ["", ""]
+    words = full_name.split(" ")
 
-    for word in words:
-        if len(current_line) + len(word) + 1 > MAX_NAME_LINE:
-            name_lines.append(current_line)
-            current_line = word
-        else:
-            current_line += " " + word if current_line else word
+    name_lines[0] = words[0]
 
-    name_lines.append(current_line)
-    # Ensure we have 2 lines
-    while len(name_lines) < 2:
-        name_lines.append("")
-
-    return name_lines[:2]   
+    if len(words) > 1:
+        name_lines[1] = " ".join(words[1:])[:MAX_NAME_LINE]
+    else:
+        name_lines[1] = " "
+    return name_lines
 
 
 def searchUsers():
@@ -147,7 +139,7 @@ def printThis(user):
     fontFaceName = "Consolas"
     fontGap = { "height": 12, "weight": 400, "charSet": fontCharSet, "faceName": fontFaceName }
     fontHeader = { "height": 12, "weight": 400, "charSet": fontCharSet, "faceName": fontFaceName }
-    fontName = { "height": 28, "weight": 600, "charSet": fontCharSet, "faceName": fontFaceName }
+    fontName = { "height": 32, "weight": 600, "charSet": fontCharSet, "faceName": fontFaceName }
     fontCompany = { "height": 24, "weight": 600, "charSet": fontCharSet, "faceName": fontFaceName }
     fontTitle = { "height": 16, "weight": 400, "charSet": fontCharSet, "faceName": fontFaceName }
 
