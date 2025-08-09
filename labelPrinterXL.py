@@ -120,6 +120,14 @@ def printThis(user):
     if (not PRINTING_ENV):
         return user
 
+    fontHeader = {
+        "height": 22.5,
+        "weight": 600,
+        "charSet": "ANSI_CHARSET",
+        "faceName": "Consolas",
+    }
+
+
     with win32printing.Printer(
         printer_name="iDPRT SP410", margin=(0, 0, 5, 0)  # up, right, down, left
     ) as _printer:
@@ -165,9 +173,9 @@ def printThis(user):
                 }  # Adjusting the font so it keeps the name(s) on the page
                 _printer.linegap = 5  # space between lines
                 
-                _printer.text(" ", align="center", font_config=_printfontAdjustAlt)  
-                _printer.text("< Descope MCP Hackathon />", align="center", font_config=_printfontAdjust) 
-                _printer.text(" ", align="center", font_config=_printfontAdjustAlt)  
+                _printer.text(" ", align="center", font_config=fontHeader)  
+                _printer.text("< Descope MCP Hackathon />", align="center", font_config=fontHeader) 
+                _printer.text(" ", align="center", font_config=fontHeader)  
 
                 match len(_namelist):
                     case 1:
@@ -278,9 +286,6 @@ def printThis(user):
                     150  # Bug with win32printing -- need to use large numbers like this
                 )
                 _printer.text("\u2500" * 30, align="center")  # Formatting line
-                #print a logo
-                _printer.image("logo.png", align="center")
-
 
                 companyName = get_print_string(user["customAttributes"],"companyName",MAX_COMPANY_LINE)
                 _printfontAdjust = {
