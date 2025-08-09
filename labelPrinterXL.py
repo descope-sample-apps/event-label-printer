@@ -147,9 +147,9 @@ def printThis(user):
     fontFaceName = "Consolas"
     fontGap = { "height": 12, "weight": 400, "charSet": fontCharSet, "faceName": fontFaceName }
     fontHeader = { "height": 12, "weight": 400, "charSet": fontCharSet, "faceName": fontFaceName }
-    fontName = { "height": 30, "weight": 600, "charSet": fontCharSet, "faceName": fontFaceName }
-    fontCompany = { "height": 25, "weight": 600, "charSet": fontCharSet, "faceName": fontFaceName }
-    fontTitle = { "height": 20, "weight": 400, "charSet": fontCharSet, "faceName": fontFaceName }
+    fontName = { "height": 28, "weight": 600, "charSet": fontCharSet, "faceName": fontFaceName }
+    fontCompany = { "height": 24, "weight": 600, "charSet": fontCharSet, "faceName": fontFaceName }
+    fontTitle = { "height": 16, "weight": 400, "charSet": fontCharSet, "faceName": fontFaceName }
 
 
     with win32printing.Printer(
@@ -169,6 +169,7 @@ def printThis(user):
             _printer.text(name_lines[1], align="center", font_config=fontName)  
             _printer.text(" ", align="center", font_config=fontGap)  
 
+            _printer.linegap = (200)
             _printer.text("\u2500" * 30, align="center")
 
             companyName = get_print_string(user["customAttributes"],"companyName",MAX_COMPANY_LINE)
