@@ -16,8 +16,8 @@ from descope import (
 )
 
 LINE_CLEAR = '\x1b[2K' 
-MAX_NAME_LINE = 15
-MAX_COMPANY_LINE = 20
+MAX_NAME_LINE = 18
+MAX_COMPANY_LINE = 22
 MAX_TITLE_LINE = 40
 
 print("Setting up...")
@@ -38,44 +38,12 @@ except Exception as error:
 def get_print_string(arr, key, max):
     if not key in arr:
         return ""
-    print(arr[key])
+
     if (len(arr[key]) > max):
         return arr[key][:max]
     else:
         return arr[key]
 
-def get_print_name_string(name, max):
-    print(name)
-    if (len(name) > max):
-        return name[:max]
-    else:
-        return name
-    
-def get_name_array(full_name):
-    name = full_name.strip()
-    if (len(name) < 20):
-        return [name]
-    
-    nameArr = name.split(" ")
-    
-    lines = []
-    currentLine = get_print_name_string(nameArr[0], MAX_NAME_LINE)
-
-    for idx in range (1,len(nameArr)):
-        namePart =get_print_name_string(nameArr[idx],MAX_NAME_LINE)
-
-        if len(currentLine + " " + namePart) > MAX_NAME_LINE:
-            lines.append(currentLine)
-            currentLine = namePart
-        else:
-            currentLine = currentLine + " " + namePart
-
-    lines.append(currentLine)
-
-    return lines[:3] 
-
-# get the first word in the first line
-# and the rest of the words in second line capped at MAX_NAME_LENGTH
 def get_name_lines(full_name):
     name_lines = ["", ""]
     words = full_name.split(" ")
@@ -115,7 +83,6 @@ def searchUsers():
 
 def updateUser(user):
     login_id = user["loginIds"][0]
-    print(login_id)
     attribute_key = "printed"
     attribute_val = True
 
@@ -187,7 +154,7 @@ def printAlgo():
                     printThis(user)
                     updateUser(user)
 
-        time.sleep(5)
+        time.sleep(2)
 
 def main():
     printAlgo()
