@@ -121,7 +121,7 @@ def printThis(user):
         return user
 
     fontHeader = {
-        "height": 22.5,
+        "height": 12,
         "weight": 600,
         "charSet": "ANSI_CHARSET",
         "faceName": "Consolas",
