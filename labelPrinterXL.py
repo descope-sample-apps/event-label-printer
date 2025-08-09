@@ -148,8 +148,8 @@ def printThis(user):
     fontGap = { "height": 12, "weight": 400, "charSet": fontCharSet, "faceName": fontFaceName }
     fontHeader = { "height": 12, "weight": 400, "charSet": fontCharSet, "faceName": fontFaceName }
     fontName = { "height": 30, "weight": 600, "charSet": fontCharSet, "faceName": fontFaceName }
-    fontCompany = { "height": 20, "weight": 600, "charSet": fontCharSet, "faceName": fontFaceName }
-    fontTitle = { "height": 16, "weight": 400, "charSet": fontCharSet, "faceName": fontFaceName }
+    fontCompany = { "height": 25, "weight": 600, "charSet": fontCharSet, "faceName": fontFaceName }
+    fontTitle = { "height": 20, "weight": 400, "charSet": fontCharSet, "faceName": fontFaceName }
 
 
     with win32printing.Printer(
@@ -165,6 +165,7 @@ def printThis(user):
 
             name_lines = get_name_lines(user["name"])                
             _printer.text(name_lines[0], align="center", font_config=fontName)  
+            _printer.text(" ", align="center", font_config=fontGap)  
             _printer.text(name_lines[1], align="center", font_config=fontName)  
             _printer.text(" ", align="center", font_config=fontGap)  
 
