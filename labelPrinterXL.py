@@ -17,7 +17,7 @@ from descope import (
 
 LINE_CLEAR = '\x1b[2K' 
 MAX_NAME_LINE = 18
-MAX_COMPANY_LINE = 22
+MAX_COMPANY_LINE = 25
 MAX_TITLE_LINE = 40
 
 print("Setting up...")
@@ -106,7 +106,7 @@ def printThis(user):
     fontGap = { "height": 12, "weight": 400, "charSet": fontCharSet, "faceName": fontFaceName }
     fontHeader = { "height": 12, "weight": 400, "charSet": fontCharSet, "faceName": fontFaceName }
     fontName = { "height": 32, "weight": 600, "charSet": fontCharSet, "faceName": fontFaceName }
-    fontCompany = { "height": 24, "weight": 600, "charSet": fontCharSet, "faceName": fontFaceName }
+    fontCompany = { "height": 20, "weight": 600, "charSet": fontCharSet, "faceName": fontFaceName }
     fontTitle = { "height": 16, "weight": 400, "charSet": fontCharSet, "faceName": fontFaceName }
 
 
