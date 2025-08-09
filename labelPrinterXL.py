@@ -16,8 +16,8 @@ from descope import (
 )
 
 LINE_CLEAR = '\x1b[2K' 
-MAX_NAME_LINE = 18
-MAX_COMPANY_LINE = 25
+MAX_NAME_LINE = 20
+MAX_COMPANY_LINE = 39
 MAX_TITLE_LINE = 40
 
 print("Setting up...")
