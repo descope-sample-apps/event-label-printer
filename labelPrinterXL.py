@@ -127,9 +127,6 @@ def printThis(user):
             _printer.start_doc  # start job
             try:
                 _printer.start_page  # using one label
-                # Draw a frame (rectangle border) on the label
-                # Adjust these values as needed for your label size 
-                _printer.rect(10, 10, 390, 190, 4)  # left, top, right, bottom, width
                 _namelist = get_name_array(user["name"])
                 carryStr = None
                 index = 0
