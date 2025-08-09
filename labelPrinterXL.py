@@ -145,10 +145,11 @@ def printThis(user):
 
     fontCharSet = "ANSI_CHARSET"
     fontFaceName = "Consolas"
+    fontGap = { "height": 12, "weight": 400, "charSet": fontCharSet, "faceName": fontFaceName }
     fontHeader = { "height": 12, "weight": 400, "charSet": fontCharSet, "faceName": fontFaceName }
-    fontName = { "height": 25, "weight": 600, "charSet": fontCharSet, "faceName": fontFaceName }
+    fontName = { "height": 30, "weight": 600, "charSet": fontCharSet, "faceName": fontFaceName }
     fontCompany = { "height": 20, "weight": 600, "charSet": fontCharSet, "faceName": fontFaceName }
-    fontTitle = { "height": 16, "weight": 600, "charSet": fontCharSet, "faceName": fontFaceName }
+    fontTitle = { "height": 16, "weight": 400, "charSet": fontCharSet, "faceName": fontFaceName }
 
 
     with win32printing.Printer(
@@ -156,30 +157,28 @@ def printThis(user):
     ) as _printer:
         try:
             _printer.start_doc  # start job
-            try:
-                _printer.start_page  # using one label
-                
-                _printer.text(" ", align="center", font_config=fontHeader)  
-                _printer.text("< Descope MCP Hackathon />", align="center", font_config=fontHeader) 
-                _printer.text(" ", align="center", font_config=fontHeader)  
+            _printer.start_page  # using one label
+            
+            _printer.text(" ", align="center", font_config=fontGap)  
+            _printer.text("< Descope MCP Hackathon />", align="center", font_config=fontHeader) 
+            _printer.text(" ", align="center", font_config=fontGap)  
 
-                name_lines = get_name_lines(user["name"])                
-                _printer.text(name_lines[0], align="center", font_config=fontName)  
-                _printer.text(name_lines[1], align="center", font_config=fontName)  
+            name_lines = get_name_lines(user["name"])                
+            _printer.text(name_lines[0], align="center", font_config=fontName)  
+            _printer.text(name_lines[1], align="center", font_config=fontName)  
+            _printer.text(" ", align="center", font_config=fontGap)  
 
+            _printer.linegap = (350)
+            _printer.text("\u2500" * 30, align="center")
 
-                _printer.linegap = (150)
-                _printer.text("\u2500" * 30, align="center")
+            companyName = get_print_string(user["customAttributes"],"companyName",MAX_COMPANY_LINE)
+            _printer.text(companyName,align="center",font_config=fontCompany)
+            
+            title = get_print_string(user["customAttributes"],"title",MAX_TITLE_LINE)
+            _printer.text(title,align="center",font_config=fontTitle)
+            user["customAttributes"]["print"] = False
 
-                companyName = get_print_string(user["customAttributes"],"companyName",MAX_COMPANY_LINE)
-                _printer.text(companyName,align="center",font_config=fontCompany)
-                
-                title = get_print_string(user["customAttributes"],"title",MAX_TITLE_LINE)
-                _printer.text(title,align="center",font_config=fontTitle)
-                user["customAttributes"]["print"] = False
-
-            finally:
-                _printer.end_page
+            _printer.end_page
         finally:
             _printer.end_doc
         return user
