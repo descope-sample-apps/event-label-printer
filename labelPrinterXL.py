@@ -166,7 +166,7 @@ def printThis(user):
                 _printer.linegap = 5  # space between lines
                 
                 _printer.text(" ", align="center", font_config=_printfontAdjustAlt)  
-                _printer.text("< Descope MCP Hackathon />", align="center", font_config=_printfontAdjustAlt) 
+                _printer.text("< Descope MCP Hackathon />", align="center", font_config=_printfontAdjust) 
                 _printer.text(" ", align="center", font_config=_printfontAdjustAlt)  
 
                 match len(_namelist):
@@ -277,7 +277,7 @@ def printThis(user):
                 _printer.linegap = (
                     150  # Bug with win32printing -- need to use large numbers like this
                 )
-                _printer.text("\u2500" * 10, align="center")  # Formatting line
+                _printer.text("\u2500" * 30, align="center")  # Formatting line
                 #print a logo
                 _printer.image("logo.png", align="center")
 
