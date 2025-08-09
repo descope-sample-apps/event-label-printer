@@ -17,7 +17,7 @@ from descope import (
 
 LINE_CLEAR = '\x1b[2K' 
 MAX_NAME_LINE = 20
-MAX_COMPANY_LINE = 40
+MAX_COMPANY_LINE = 25
 MAX_TITLE_LINE = 40
 
 print("Setting up...")
@@ -121,7 +121,6 @@ def updateUser(user):
 
     try:
         resp = descope_client.mgmt.user.update_custom_attribute(login_id=login_id, attribute_key=attribute_key, attribute_val=attribute_val)
-        print(resp)
         print ("   Successfully updated user. LoginID: " + login_id + ". userEmail: " + user["email"] + ".")
         print()
     except AuthException as error:
