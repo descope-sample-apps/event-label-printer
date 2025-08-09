@@ -149,27 +149,29 @@ def printThis(user):
                         carryStr = None
                     index += 1
                 _printfontAdjust = {
-                    "height": 25 - (0.4 * len(max(_namelist, key=len))),
+                    "height": 35 - (0.4 * len(max(_namelist, key=len))),
                     "weight": 800,
                     "charSet": "ANSI_CHARSET",
                     "faceName": "Consolas",
                 }
                 _printfontAdjustAlt = {
-                    "height": 25 - 0.9 * len(user["name"]),
+                    "height": 30 - 0.9 * len(user["name"]),
                     "weight": 800,
                     "charSet": "ANSI_CHARSET",
                     "faceName": "Consolas",
                 }
                 _printfontAdjustAltAlt = {
-                    "height": 25 - 1.5 * len(user["name"]),
+                    "height": 30 - 1.5 * len(user["name"]),
                     "weight": 800,
                     "charSet": "ANSI_CHARSET",
                     "faceName": "Consolas",
                 }  # Adjusting the font so it keeps the name(s) on the page
                 _printer.linegap = 5  # space between lines
-                _printer.text(
-                    " ", align="center", font_config=_printfontAdjust
-                )  # Formatting
+                
+                _printer.text(" ", align="center", font_config=_printfontAdjustAlt)  
+                _printer.text("< Descope MCP Hackathon />", align="center", font_config=_printfontAdjustAlt) 
+                _printer.text(" ", align="center", font_config=_printfontAdjustAlt)  
+
                 match len(_namelist):
                     case 1:
                         _printer.text(
