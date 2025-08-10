@@ -162,6 +162,6 @@ def printAlgo():
 
 def main():
     printAlgo()
-    return 0
+    return
 
 main()
