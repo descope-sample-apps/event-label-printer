@@ -110,7 +110,6 @@ def printThis(user):
     title = get_print_string(user["customAttributes"],"title",MAX_TITLE_LINE)
 
     if (not PRINTING_ENV):
-        print("Simulated printing...")
         print("   " + "-" * 35)
         print("   | " + labelHeader)
         print("   | " + name_lines[0])
