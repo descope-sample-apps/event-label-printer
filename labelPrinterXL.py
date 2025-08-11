@@ -61,11 +61,10 @@ def search_users():
     try:
         resp = descope_client.mgmt.user.search_all(custom_attributes=custom_attributes)
         users = resp["users"] 
-        print(end=LINE_CLEAR) # <-- clear the line where cursor is located
-        
+
+        print(end=LINE_CLEAR)
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
-
         print("   " + current_time + " Running... ", end='\r')
 
         if (len(users) > 0):
