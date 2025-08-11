@@ -102,7 +102,7 @@ def print_user(user):
     font_header = { "height": 12, "weight": 400, "charSet": FONT_CHAR_SET, "faceName": FONT_FACE_NAME }
     font_name = { "height": 32, "weight": 600, "charSet": FONT_CHAR_SET, "faceName": FONT_FACE_NAME }
     font_company = { "height": 20, "weight": 600, "charSet": FONT_CHAR_SET, "faceName": FONT_FACE_NAME }
-    font_title = { "height": 16, "weight": 400, "charSet": FONT_CHAR_SET, "faceName": FONT_FACE_NAME }
+    font_title = { "height": 16, "weight": 400, "italic": True, "charSet": FONT_CHAR_SET, "faceName": FONT_FACE_NAME }
 
     label_header = get_print_string(user["customAttributes"],"labelHeader",MAX_BALE_HEADER_LINE)
     name_lines = get_name_lines(user["name"])                
