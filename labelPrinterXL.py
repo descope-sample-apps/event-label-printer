@@ -39,9 +39,10 @@ def get_print_string(arr, key, max):
     if not key in arr:
         return ""
     if (len(arr[key]) > max):
-        return arr[key][:max]
+        # trim spaces
+        return arr[key][:max].rstrip()
     else:
-        return arr[key]
+        return arr[key].rstrip()
 
 def get_name_lines(full_name):
     name_lines = ["", ""]
