@@ -78,6 +78,7 @@ def search_users():
         print("Unable to search users.")
         print("Status Code: " + str(error.status_code))
         print("Error: " + str(error.error_message))
+        return []
 
 def update_user(user):
     login_id = user["loginIds"][0]
