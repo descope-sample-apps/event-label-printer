@@ -129,12 +129,12 @@ def print_user(user):
             _printer.text(label_header, align="center", font_config=font_header)
             _printer.text(" ", align="center", font_config=font_gap)
 
+            _printer.text("\u2500" * 35, align="center")
+            _printer.text(" ", align="center", font_config=font_gap)
+
             _printer.text(name_lines[0], align="center", font_config=font_name)
             _printer.text(" ", align="center", font_config=font_gap)
             _printer.text(name_lines[1], align="center", font_config=font_name)
-            _printer.text(" ", align="center", font_config=font_gap)
-
-            _printer.text("\u2500" * 35, align="center")
             _printer.text(" ", align="center", font_config=font_gap)
 
             _printer.text(company_name, align="center", font_config=font_company)
