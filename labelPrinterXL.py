@@ -86,7 +86,7 @@ def update_user(user):
     attribute_val = True
 
     try:
-        resp = descope_client.mgmt.user.update_custom_attribute(login_id=login_id, attribute_key=attribute_key, attribute_val=attribute_val)
+        descope_client.mgmt.user.update_custom_attribute(login_id=login_id, attribute_key=attribute_key, attribute_val=attribute_val)
         print ("   Successfully updated user. Email: " + login_id)
         print()
     except AuthException as error:
