@@ -10,6 +10,8 @@ MAX_NAME_LINE = 20
 MAX_COMPANY_LINE = 39
 MAX_TITLE_LINE = 40
 MAX_BALE_HEADER_LINE = 100
+FONT_CHAR_SET = "ANSI_CHARSET"
+FONT_FACE_NAME = "Consolas"
 
 print("Setting up...")
 
@@ -54,7 +56,7 @@ def get_name_lines(full_name):
     return name_lines
 
 
-def searchUsers():
+def search_users():
     custom_attributes = {"checkedIn": True, "approved": True, "printed": False}
     try:
         resp = descope_client.mgmt.user.search_all(custom_attributes=custom_attributes)
@@ -78,7 +80,7 @@ def searchUsers():
         print("Status Code: " + str(error.status_code))
         print("Error: " + str(error.error_message))
 
-def updateUser(user):
+def update_user(user):
     login_id = user["loginIds"][0]
     attribute_key = "printed"
     attribute_val = True
@@ -93,28 +95,26 @@ def updateUser(user):
         print ("Error: " + str(error.error_message))
         exit(1)
 
-def printThis(user):
+def print_user(user):
     print("   Printing " + user["name"])
 
-    fontCharSet = "ANSI_CHARSET"
-    fontFaceName = "Consolas"
-    fontGap = { "height": 12, "weight": 400, "charSet": fontCharSet, "faceName": fontFaceName }
-    fontHeader = { "height": 12, "weight": 400, "charSet": fontCharSet, "faceName": fontFaceName }
-    fontName = { "height": 32, "weight": 600, "charSet": fontCharSet, "faceName": fontFaceName }
-    fontCompany = { "height": 20, "weight": 600, "charSet": fontCharSet, "faceName": fontFaceName }
-    fontTitle = { "height": 16, "weight": 400, "charSet": fontCharSet, "faceName": fontFaceName }
+    font_gap = { "height": 12, "weight": 400, "charSet": FONT_CHAR_SET, "faceName": FONT_FACE_NAME }
+    font_header = { "height": 12, "weight": 400, "charSet": FONT_CHAR_SET, "faceName": FONT_FACE_NAME }
+    font_name = { "height": 32, "weight": 600, "charSet": FONT_CHAR_SET, "faceName": FONT_FACE_NAME }
+    font_company = { "height": 20, "weight": 600, "charSet": FONT_CHAR_SET, "faceName": FONT_FACE_NAME }
+    font_title = { "height": 16, "weight": 400, "charSet": FONT_CHAR_SET, "faceName": FONT_FACE_NAME }
 
-    labelHeader = get_print_string(user["customAttributes"],"labelHeader",MAX_BALE_HEADER_LINE)
+    label_header = get_print_string(user["customAttributes"],"labelHeader",MAX_BALE_HEADER_LINE)
     name_lines = get_name_lines(user["name"])                
-    companyName = get_print_string(user["customAttributes"],"companyName",MAX_COMPANY_LINE)
+    company_name = get_print_string(user["customAttributes"],"companyName",MAX_COMPANY_LINE)
     title = get_print_string(user["customAttributes"],"title",MAX_TITLE_LINE)
 
     if (not PRINTING_ENV):
         print("   " + "-" * 35)
-        print("   | " + labelHeader)
+        print("   | " + label_header)
         print("   | " + name_lines[0])
         print("   | " + name_lines[1])
-        print("   | " + companyName)
+        print("   | " + company_name)
         print("   | " + title)
         print("   " + "-" * 35)
         return
@@ -123,25 +123,25 @@ def printThis(user):
         try:
             _printer.start_doc  # start job
             _printer.start_page  # using one label
-            
-            _printer.text(" ", align="center", font_config=fontGap)  
-            
-            _printer.text(labelHeader, align="center", font_config=fontHeader) 
-            _printer.text(" ", align="center", font_config=fontGap)  
 
-            _printer.text(name_lines[0], align="center", font_config=fontName)  
-            _printer.text(" ", align="center", font_config=fontGap)  
-            _printer.text(name_lines[1], align="center", font_config=fontName)  
-            _printer.text(" ", align="center", font_config=fontGap)  
+            _printer.text(" ", align="center", font_config=font_gap)
+
+            _printer.text(label_header, align="center", font_config=font_header)
+            _printer.text(" ", align="center", font_config=font_gap)
+
+            _printer.text(name_lines[0], align="center", font_config=font_name)
+            _printer.text(" ", align="center", font_config=font_gap)
+            _printer.text(name_lines[1], align="center", font_config=font_name)
+            _printer.text(" ", align="center", font_config=font_gap)
 
             _printer.text("\u2500" * 35, align="center")
-            _printer.text(" ", align="center", font_config=fontGap)  
+            _printer.text(" ", align="center", font_config=font_gap)
 
-            _printer.text(companyName,align="center",font_config=fontCompany)
+            _printer.text(company_name, align="center", font_config=font_company)
 
-            _printer.text(" ", align="center", font_config=fontGap)  
+            _printer.text(" ", align="center", font_config=font_gap)
 
-            _printer.text(title,align="center",font_config=fontTitle)
+            _printer.text(title, align="center", font_config=font_title)
 
             _printer.end_page
         finally:
@@ -149,19 +149,19 @@ def printThis(user):
     return
 
 
-def printAlgo():
+def print_loop():
     while True:
-        userList = searchUsers()  # All users checked in but not printed
-        if userList != None:
-            for user in userList:
+        users_list = search_users()  # All users checked in but not printed
+        if users_list != None:
+            for user in users_list:
                 if user != None:
-                    printThis(user)
-                    updateUser(user)
+                    print_user(user)
+                    update_user(user)
 
         time.sleep(1)
 
 def main():
-    printAlgo()
+    print_loop()
     return
 
 main()
